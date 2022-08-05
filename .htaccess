@@ -1,8 +1,9 @@
 AddDefaultCharset UTF-8
 
+DirectoryIndex index.php
 RewriteEngine on
 RewriteBase /
-DirectoryIndex index.php
+
 
 #php_flag display_errors on
 

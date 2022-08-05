@@ -1,0 +1,58 @@
+AddDefaultCharset UTF-8
+
+RewriteEngine on
+RewriteBase /
+DirectoryIndex index.php
+
+#php_flag display_errors on
+
+<Files ~ "\.(srlz|tpl|db)$">
+deny from all
+</Files>
+
+#rss
+RewriteRule ^feed/rss cache/etc/rss_feed.xml [L,QSA]
+
+#SPECIAL
+RewriteRule ^go/(.*) code/special.php?redirect=$1 [L,QSA]
+RewriteRule ^export_content$ code/plugins/export_content.php [L,QSA]
+RewriteRule ^add_key_off$ code/special.php?add_key_off [L,QSA]
+RewriteRule ^add_key_on$ code/special.php?add_key_on [L,QSA]
+RewriteRule ^ping_main$ code/special.php?ping_main [L,QSA]
+RewriteRule ^add_new_key$ code/special.php?add_new_key [L,QSA]
+RewriteRule ^sitemap.xml$ code/special.php?xml_sitemap [L,QSA]
+RewriteRule ^spec/([A-Za-z0-9~_-]+)$ code/special.php?spec=$1 [L,QSA]
+RewriteRule ^spec/([A-Za-z0-9~_-]+)/([^=]+)$ code/special.php?spec=$1&text=$2 [L,QSA]
+RewriteRule ^admin/?$ code/special.php?admin [L,QSA]
+RewriteRule ^log_queries$ code/special.php?log_queries [L,QSA]
+RewriteRule ^graph_queries$ code/special.php?graph_queries [L,QSA]
+RewriteRule ^admin_login$ code/special.php?admin_login [L,QSA]
+RewriteRule ^admin_logout$ code/special.php?admin_logout [L,QSA]
+RewriteRule ^create_page$ code/plugins/create_page.php [L,QSA]
+
+#contact form
+RewriteRule ^contact/?$ index.php?page=contact_form [L,QSA]
+
+#sitemap
+RewriteRule ^sitemap/?$ index.php?page=sitemap [L,QSA]
+RewriteRule ^sitemap/page/([1-9][0-9]*)/?$ index.php?page=sitemap&pageNUM=$1 [L,QSA]
+
+#category
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} ^/([A-Z][A-Za-z0-9~_-]+)$
+RewriteRule ^([A-Z0-9][A-Za-z0-9~_-]+)$ /$1/ [R=301,L]
+RewriteRule ^([A-Za-z0-9~_-]+)/$ index.php?page=categ&name=$1 [L,QSA]
+
+RewriteRule ^([A-Za-z0-9~_-]+)/page/1/?$ $1 [R=301,L]
+RewriteRule ^([A-Za-z0-9~_-]+)/page/([1-9][0-9]*)$ index.php?page=categ&name=$1&pageNUM=$2 [L,QSA]
+RewriteRule ^([A-Za-z0-9~_-]+)/page/([1-9][0-9]*)/$ index.php?page=categ&name=$1&pageNUM=$2 [L,QSA]
+
+#items
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([A-Za-z0-9~_-]+)/([A-Za-z0-9~_-]+)/?$ index.php?page=items&categ=$1&key=$2 [L,QSA]
+
+#search
+RewriteCond %{QUERY_STRING} q=(.+)
+RewriteRule (.+) code/search.php?&%{QUERY_STRING}
+
+ErrorDocument 404 /code/special.php?spec=page_not_found
